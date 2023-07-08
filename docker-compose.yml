@@ -1,0 +1,25 @@
+version: "3.4"
+
+services:
+
+  db:
+    image: mariadb:latest
+    volumes:
+      - ./db/sql:/docker-entrypoint-initdb.d
+    ports:
+      - 82:3306
+    environment:
+      - MARIADB_RANDOM_ROOT_PASSWORD=true
+      - MYSQL_USER=maria
+      - MYSQL_PASSWORD=pass
+
+  api:
+    image: node:latest
+    volumes:
+      - ./api/bin:/app
+    command: /bin/sh -c "cd /app && npm install && node /app/server.js"
+    links:
+      - "db:db"
+    ports:
+      - 81:8000
+      - 443:443
